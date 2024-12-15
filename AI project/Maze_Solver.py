@@ -5,40 +5,63 @@ from random import choice
 pygame.init()
 
 
-WIDTH, HEIGHT = 1280, 720
+WIDTH, HEIGHT = 1000, 600
 TILE_SIZE = 40
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
-
+Maze_solver_background = pygame.image.load("istockphoto-1400962786-612x612.jpg")  
+Maze_solver_background = pygame.transform.scale(Maze_solver_background, (1000, 600)) 
+PINK = (255, 192, 203)
 PURPLE = pygame.Color('purple')
+
 WHITE = pygame.Color('white')
 GREY = pygame.Color('grey')
-PINK = (255, 192, 203)
 BLACK = pygame.Color('black')
 
+Mode_buttons = {
+    "Easy": pygame.Rect(400, 200, 200, 50),  
+    "Hard": pygame.Rect(400, 270, 200, 50),
+    "Go to Home": pygame.Rect(400, 340, 200, 50),
+}
 
+Button_font = pygame.font.Font('pixeboy-font/Pixeboy-z8XGD.ttf',30)
 
 def difficulty_menu():
-    screen.fill('purple')
-    font = pygame.font.Font(None, 74)
-    easy_text = font.render("Press E for EASY", True, GREY)
-    hard_text = font.render("Press H for HARD", True, GREY)
-
-    screen.blit(easy_text, (WIDTH // 2 - 200, HEIGHT // 3))
-    screen.blit(hard_text, (WIDTH // 2 - 200, HEIGHT // 2))
-    pygame.display.flip()
-
     while True:
+        # Continuously update the mouse position
+        mouse_pos = pygame.mouse.get_pos()
+
+        # Draw the background
+        screen.blit(Maze_solver_background, (0, 0))
+
+        # Draw the buttons and check for hover effects
+        for text, rect in Mode_buttons.items():
+            color = (200, 200, 200) if rect.collidepoint(mouse_pos) else (108, 115, 212)
+            pygame.draw.rect(screen, color, rect, border_radius=15)
+            pygame.draw.rect(screen, (108, 115, 212), rect, 3, border_radius=15)  
+
+            # Render the text for each button
+            text_surface = Button_font.render(text, True, (0, 0, 0))
+            text_rect = text_surface.get_rect(center=rect.center)
+            screen.blit(text_surface, text_rect)
+
+        # Handle events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_e:
-                    return "easy"
-                elif event.key == pygame.K_h:
-                    return "hard"
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                for text, rect in Mode_buttons.items():
+                    if rect.collidepoint(mouse_pos):
+                        if text == "Easy":
+                            return "easy"
+                        elif text == "Hard":
+                            return "hard"
+                        elif text == "Go to Home":
+                            import Main
+                            Main.main()
+        pygame.display.flip()
 
 
 
@@ -121,36 +144,37 @@ def check_walls(current, next):
 
 level = difficulty_menu()
 set_difficulty(level)
-
 grid_cells = [Cell(col, row) for row in range(rows) for col in range(cols)]
-current_cell = grid_cells[0]
 stack = []
-colors,color=[],40
 
-while True:
-    screen.fill(PURPLE)
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            exit()
+def main():
+    current_cell = grid_cells[0]
+    colors,color=[],40
+    while True:
+        screen.fill(PURPLE)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
 
-    [cell.draw() for cell in grid_cells]
-    current_cell.visited = True
-    current_cell.draw_current_cell()
-    [pygame.draw.rect(screen, colors[i],
-                      (cell.x * TILE_SIZE + 5, cell.y * TILE_SIZE + 5, TILE_SIZE - 10, TILE_SIZE - 10),
-                      border_radius=12) for i, cell in enumerate(stack)]
-    next_cell = current_cell.check_neighbors()
-    if next_cell:
-        stack.append(current_cell)
-        next_cell.visited = True
-        check_walls(current_cell, next_cell)
-        colors.append((min(color, 255), 10, 100))
-        color += 1
-        current_cell = next_cell
-    elif stack:
-        current_cell = stack.pop()
+        [cell.draw() for cell in grid_cells]
+        current_cell.visited = True
+        current_cell.draw_current_cell()
+        [pygame.draw.rect(screen, colors[i],
+                        (cell.x * TILE_SIZE + 5, cell.y * TILE_SIZE + 5, TILE_SIZE - 10, TILE_SIZE - 10),
+                        border_radius=12) for i, cell in enumerate(stack)]
+        next_cell = current_cell.check_neighbors()
+        if next_cell:
+            stack.append(current_cell)
+            next_cell.visited = True
+            check_walls(current_cell, next_cell)
+            colors.append((min(color, 255), 10, 100))
+            color += 1
+            current_cell = next_cell
+        elif stack:
+            current_cell = stack.pop()
 
 
-    pygame.display.flip()
-    clock.tick(30)
+        pygame.display.flip()
+        clock.tick(30)
+main()
