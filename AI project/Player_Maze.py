@@ -1,58 +1,51 @@
-import random 
+import random
 import pygame
 from random import choice
 
-
 pygame.init()
 
-TILE_SIZE =40
-goal_icon = pygame.image.load("star.png") 
-goal_icon = pygame.transform.scale(goal_icon, (TILE_SIZE , TILE_SIZE))  
+TILE_SIZE = 40
+goal_icon = pygame.image.load("star.png")
+goal_icon = pygame.transform.scale(goal_icon, (TILE_SIZE, TILE_SIZE))
+player_icon = pygame.image.load("rocket.png")  
+player_icon = pygame.transform.scale(player_icon, (TILE_SIZE , TILE_SIZE ))
 
 WIDTH, HEIGHT = 1000, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
 Mode_buttons = {
-    "Easy": pygame.Rect(400, 200, 200, 50),  
+    "Easy": pygame.Rect(400, 200, 200, 50),
     "Hard": pygame.Rect(400, 270, 200, 50),
     "Go to Home": pygame.Rect(400, 340, 200, 50),
 }
 
-Maze_Player_background = pygame.image.load("8-bit-space-console-v0-zjbpg4wmdfvc1.webp")  
-Maze_Player_background = pygame.transform.scale(Maze_Player_background, (1000, 600)) 
-Maze_background = pygame.image.load("pixel-art-night-sky-starry-space-with-shooting-stars-8-bit-pixelated-game-galaxy-seamless-background-vector.jpg")  
-Maze_background = pygame.transform.scale(Maze_background, (1000, 600)) 
+Maze_Player_background = pygame.image.load("8-bit-space-console-v0-zjbpg4wmdfvc1.webp")
+Maze_Player_background = pygame.transform.scale(Maze_Player_background, (1000, 600))
+Maze_background = pygame.image.load("pixel-art-night-sky-starry-space-with-shooting-stars-8-bit-pixelated-game-galaxy-seamless-background-vector.jpg")
+Maze_background = pygame.transform.scale(Maze_background, (1000, 600))
+
 PINK = (255, 192, 203)
-PURPLE = pygame.Color('purple')
+PURPLE = pygame.Color("purple")
+WHITE = pygame.Color("white")
+GREY = pygame.Color("grey")
+BLACK = pygame.Color("black")
 
-WHITE = pygame.Color('white')
-GREY = pygame.Color('grey')
-BLACK = pygame.Color('black')
+Button_font = pygame.font.Font("pixeboy-font/Pixeboy-z8XGD.ttf", 30)
 
-
-Button_font = pygame.font.Font('pixeboy-font/Pixeboy-z8XGD.ttf',30)
 
 def difficulty_menu():
     while True:
-        # Continuously update the mouse position
         mouse_pos = pygame.mouse.get_pos()
-
-        # Draw the background
         screen.blit(Maze_Player_background, (0, 0))
-
-        # Draw the buttons and check for hover effects
         for text, rect in Mode_buttons.items():
             color = (200, 200, 200) if rect.collidepoint(mouse_pos) else (108, 115, 212)
             pygame.draw.rect(screen, color, rect, border_radius=15)
-            pygame.draw.rect(screen, (108, 115, 212), rect, 3, border_radius=15)  
-
-            # Render the text for each button
+            pygame.draw.rect(screen, (108, 115, 212), rect, 3, border_radius=15)
             text_surface = Button_font.render(text, True, (0, 0, 0))
             text_rect = text_surface.get_rect(center=rect.center)
             screen.blit(text_surface, text_rect)
 
-        # Handle events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -66,13 +59,10 @@ def difficulty_menu():
                             return "hard"
                         elif text == "Go to Home":
                             import Main
+
                             Main.main()
 
         pygame.display.flip()
-
-                        
-                        
-
 
 
 def set_difficulty(level):
@@ -85,12 +75,11 @@ def set_difficulty(level):
     cols, rows = WIDTH // TILE_SIZE, HEIGHT // TILE_SIZE
 
 
-
 class Cell:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.walls = {'top': True, 'down': True, 'left': True, 'right': True}
+        self.walls = {"top": True, "down": True, "left": True, "right": True}
         self.visited = False
 
     def draw_current_cell(self):
@@ -101,13 +90,13 @@ class Cell:
         x, y = self.x * TILE_SIZE, self.y * TILE_SIZE
         if self.visited:
             pygame.draw.rect(screen, BLACK, (x, y, TILE_SIZE, TILE_SIZE))
-        if self.walls['top']:
+        if self.walls["top"]:
             pygame.draw.line(screen, GREY, (x, y), (x + TILE_SIZE, y), 2)
-        if self.walls['right']:
+        if self.walls["right"]:
             pygame.draw.line(screen, GREY, (x + TILE_SIZE, y), (x + TILE_SIZE, y + TILE_SIZE), 2)
-        if self.walls['down']:
+        if self.walls["down"]:
             pygame.draw.line(screen, GREY, (x + TILE_SIZE, y + TILE_SIZE), (x, y + TILE_SIZE), 2)
-        if self.walls['left']:
+        if self.walls["left"]:
             pygame.draw.line(screen, GREY, (x, y + TILE_SIZE), (x, y), 2)
 
     def check_cell(self, x, y):
@@ -136,20 +125,19 @@ class Cell:
 def check_walls(current, next):
     dx = current.x - next.x
     if dx == 1:
-        current.walls['left'] = False
-        next.walls['right'] = False
+        current.walls["left"] = False
+        next.walls["right"] = False
     elif dx == -1:
-        current.walls['right'] = False
-        next.walls['left'] = False
+        current.walls["right"] = False
+        next.walls["left"] = False
 
     dy = current.y - next.y
     if dy == 1:
-        current.walls['top'] = False
-        next.walls['down'] = False
+        current.walls["top"] = False
+        next.walls["down"] = False
     elif dy == -1:
-        current.walls['down'] = False
-        next.walls['top'] = False
-
+        current.walls["down"] = False
+        next.walls["top"] = False
 
 
 level = difficulty_menu()
@@ -158,16 +146,19 @@ set_difficulty(level)
 grid_cells = [Cell(col, row) for row in range(rows) for col in range(cols)]
 stack = []
 
-
 used_cells = set()
+player_position = [0, 0]  # Start position
+
 
 def set_goal():
     global goal_position
     while True:
         random_cell = random.choice(grid_cells)
-        if random_cell != grid_cells[0]:  # Avoid start cell
-            goal_position = (random_cell.x * TILE_SIZE + TILE_SIZE // 2, 
-                             random_cell.y * TILE_SIZE + TILE_SIZE // 2)
+        if random_cell != grid_cells[0]:
+            goal_position = (
+                random_cell.x * TILE_SIZE + TILE_SIZE // 2,
+                random_cell.y * TILE_SIZE + TILE_SIZE // 2,
+            )
             break
 
 
@@ -176,12 +167,20 @@ def draw_goal():
         goal_x, goal_y = goal_position
         icon_rect = goal_icon.get_rect(center=(goal_x, goal_y))
         screen.blit(goal_icon, icon_rect)
-  
+
+
+def draw_player():
+    player_x = player_position[0] * TILE_SIZE + TILE_SIZE // 2
+    player_y = player_position[1] * TILE_SIZE + TILE_SIZE // 2
+    player_rect = player_icon.get_rect(center=(player_x, player_y))
+    screen.blit(player_icon, player_rect)
+
 
 set_goal()
 
+
 def main():
-    colors,color=[],40
+    colors, color = [], 40
     current_cell = grid_cells[0]
     while True:
         screen.blit(Maze_background, (0, 0))
@@ -189,13 +188,25 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
+            elif event.type == pygame.KEYDOWN:
+                current_cell = grid_cells[player_position[1] * cols + player_position[0]]
+                if event.key == pygame.K_UP and not current_cell.walls["top"]:
+                    player_position[1] -= 1
+                elif event.key == pygame.K_DOWN and not current_cell.walls["down"]:
+                    player_position[1] += 1
+                elif event.key == pygame.K_LEFT and not current_cell.walls["left"]:
+                    player_position[0] -= 1
+                elif event.key == pygame.K_RIGHT and not current_cell.walls["right"]:
+                    player_position[0] += 1
 
         [cell.draw() for cell in grid_cells]
         current_cell.visited = True
         current_cell.draw_current_cell()
+
         [pygame.draw.rect(screen, colors[i],
-                        (cell.x * TILE_SIZE + 5, cell.y * TILE_SIZE + 5, TILE_SIZE - 10, TILE_SIZE - 10),
-                        border_radius=12) for i, cell in enumerate(stack)]
+                          (cell.x * TILE_SIZE + 5, cell.y * TILE_SIZE + 5, TILE_SIZE - 10, TILE_SIZE - 10),
+                          border_radius=12) for i, cell in enumerate(stack)]
+
         next_cell = current_cell.check_neighbors()
         if next_cell:
             stack.append(current_cell)
@@ -206,9 +217,20 @@ def main():
             current_cell = next_cell
         elif stack:
             current_cell = stack.pop()
-        
+
         draw_goal()
+        draw_player()
+
+        player_x = player_position[0] * TILE_SIZE + TILE_SIZE // 2
+        player_y = player_position[1] * TILE_SIZE + TILE_SIZE // 2
+        if abs(player_x - goal_position[0]) < TILE_SIZE // 2 and abs(player_y - goal_position[1]) < TILE_SIZE // 2:
+            import Player_won
+            Player_won.main()
+            pygame.time.delay(2000)
+            return
+
         pygame.display.flip()
         clock.tick(80)
-      
+
+
 main()

@@ -17,8 +17,6 @@ win_background = pygame.transform.scale(win_background, (1000, 600))
 Button_font = pygame.font.Font('pixeboy-font/Pixeboy-z8XGD.ttf',30)
 
 End_buttons = {
-    "Play again": pygame.Rect(400, 250, 200, 50),  
-    "Go to home": pygame.Rect(400, 320, 200, 50),
     "Quit": pygame.Rect(400, 390, 200, 50)
 }
 
@@ -43,13 +41,7 @@ def main():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 for text, rect in End_buttons.items():
                     if rect.collidepoint(mouse_pos):
-                        if text == "Play again":
-                            import Maze_Solver
-                            Maze_Solver.main()
-                        elif text == "Go to home":
-                           import Main
-                           Main.main()
-                        elif text == "Quit":
+                        if text == "Quit":
                             pygame.quit()
                             running = False
     
