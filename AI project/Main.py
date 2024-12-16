@@ -11,7 +11,7 @@ pygame.display.set_caption("Galactic Maze")
 Home_screen_buttons = {
     "Play": pygame.Rect(400, 250, 200, 50),  
     "Maze solver": pygame.Rect(400, 320, 200, 50),
-    "Quit": pygame.Rect(400, 390, 200, 50),
+    "Quit": pygame.Rect(400, 390, 200, 50)
 }
 
 logo = pygame.image.load('space.png')
@@ -62,5 +62,5 @@ def main():
         screen.blit(Title, title_rect)
         Generate_buttons(Home_screen_buttons, mouse_pos)
         pygame.display.flip()
-    
+        
 main()    

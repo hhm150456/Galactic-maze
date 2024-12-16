@@ -6,8 +6,8 @@ from random import choice
 pygame.init()
 
 TILE_SIZE =40
-goal_icon = pygame.image.load("depositphotos_705384476-stock-illustration-star-functional-game-related-sticker.jpg") 
-goal_icon = pygame.transform.scale(goal_icon, (TILE_SIZE // 2, TILE_SIZE // 2))  
+goal_icon = pygame.image.load("star.png") 
+goal_icon = pygame.transform.scale(goal_icon, (TILE_SIZE , TILE_SIZE))  
 
 WIDTH, HEIGHT = 1000, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
