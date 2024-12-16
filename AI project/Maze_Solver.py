@@ -76,12 +76,7 @@ def set_difficulty(level):
         TILE_SIZE = 80
     elif level == "hard":
         TILE_SIZE = 40
-
-cols, rows = WIDTH // TILE_SIZE, HEIGHT // TILE_SIZE
-
-
-offset_x = (WIDTH - cols * TILE_SIZE) // 2
-offset_y = (HEIGHT - rows * TILE_SIZE) // 2
+    cols, rows = WIDTH // TILE_SIZE, HEIGHT // TILE_SIZE
 
 class Cell:
     def __init__(self, x, y):
@@ -91,11 +86,11 @@ class Cell:
         self.visited = False
 
     def draw_current_cell(self):
-        x, y = self.x * TILE_SIZE + offset_x, self.y * TILE_SIZE + offset_y
+        x, y = self.x * TILE_SIZE, self.y * TILE_SIZE
         pygame.draw.rect(screen, PINK, (x + 2, y + 2, TILE_SIZE - 2, TILE_SIZE - 2))
 
     def draw(self):
-        x, y = self.x * TILE_SIZE + offset_x, self.y * TILE_SIZE + offset_y
+        x, y = self.x * TILE_SIZE, self.y * TILE_SIZE
         if self.visited:
             pygame.draw.rect(screen, BLACK, (x, y, TILE_SIZE, TILE_SIZE))
         if self.walls['top']:
@@ -106,12 +101,12 @@ class Cell:
             pygame.draw.line(screen, GREY, (x + TILE_SIZE, y + TILE_SIZE), (x, y + TILE_SIZE), 2)
         if self.walls['left']:
             pygame.draw.line(screen, GREY, (x, y + TILE_SIZE), (x, y), 2)
-    
+
     def check_cell(self, x, y):
         find_index = lambda x, y: x + y * cols
         if x < 0 or x > cols - 1 or y < 0 or y > rows - 1:
             return False
-        return grid_cells[find_index(x, y)]    
+        return grid_cells[find_index(x, y)]
 
     def check_neighbors(self):
         neighbors = []
@@ -128,7 +123,6 @@ class Cell:
         if left and not left.visited:
             neighbors.append(left)
         return choice(neighbors) if neighbors else False
-
 
 def check_walls(current, next):
     dx = current.x - next.x
@@ -230,5 +224,9 @@ def main():
                 pygame.display.flip()
                 pygame.time.delay(100)
             break
+
+
     
 main()
+import Maze_solved
+Maze_solved.main()
