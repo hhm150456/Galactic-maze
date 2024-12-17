@@ -6,6 +6,7 @@ pygame.init()
 # setting game screen
 screen = pygame.display.set_mode((1000,600))
 
+
 pygame.display.set_caption("Galactic Maze")
 
 Game_font = pygame.font.Font("pixeboy-font/Pixeboy-z8XGD.ttf", 100)  

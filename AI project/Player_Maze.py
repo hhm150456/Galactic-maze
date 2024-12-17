@@ -56,7 +56,11 @@ def difficulty_menu():
     while True:
         #Get mouse position
         mouse_pos = pygame.mouse.get_pos()
+
+        #Build difficulty menu background
         screen.blit(Maze_Player_background, (0, 0))
+
+        #Generate buttons
         for text, rect in Mode_buttons.items():
             color = (200, 200, 200) if rect.collidepoint(mouse_pos) else (108, 115, 212)
             pygame.draw.rect(screen, color, rect, border_radius=15)
@@ -65,6 +69,7 @@ def difficulty_menu():
             text_rect = text_surface.get_rect(center=rect.center)
             screen.blit(text_surface, text_rect)
 
+        #For loop for getting actions
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -78,14 +83,13 @@ def difficulty_menu():
                             return "hard"
                         elif text == "Go to Home":
                             import Main
-
                             Main.main()
 
         pygame.display.flip()
 
 
 
-
+#Function that changes tile size and intializes columns and rows after getting difficulty level
 def set_difficulty(level):
     global TILE_SIZE, cols, rows
     if level == "easy":
@@ -95,18 +99,22 @@ def set_difficulty(level):
 
     cols, rows = WIDTH // TILE_SIZE, HEIGHT // TILE_SIZE
 
-
+#Cell object (Basic building block of maze)
 class Cell:
+
+    #Cell constructor
     def __init__(self, x, y):
         self.x = x
         self.y = y
         self.walls = {"top": True, "down": True, "left": True, "right": True}
         self.visited = False
 
+    #Function that draws the current cell of the maze (DFS)
     def draw_current_cell(self):
         x, y = self.x * TILE_SIZE, self.y * TILE_SIZE
         pygame.draw.rect(screen, BLACK, (x + 2, y + 2, TILE_SIZE - 2, TILE_SIZE - 2))
 
+    #Function that draws lines of the maze
     def draw(self):
         x, y = self.x * TILE_SIZE, self.y * TILE_SIZE
         if self.visited:
@@ -120,11 +128,13 @@ class Cell:
         if self.walls["left"]:
             pygame.draw.line(screen, GREY, (x, y + TILE_SIZE), (x, y), 2)
 
+    #Function that checks if cell is visited
     def check_cell(self, x, y):
         find_index = lambda x, y: x + y * cols
         if x < 0 or x > cols - 1 or y < 0 or y > rows - 1:
             return False
         return grid_cells[find_index(x, y)]
+
 
     def check_neighbors(self):
         neighbors = []
@@ -141,6 +151,7 @@ class Cell:
         if left and not left.visited:
             neighbors.append(left)
         return choice(neighbors) if neighbors else False
+
 
 
 def check_walls(current, next):
@@ -161,19 +172,31 @@ def check_walls(current, next):
         next.walls["top"] = False
 
 
+#Call difficulty menu and set difficulty of game
 level = difficulty_menu()
 set_difficulty(level)
 
+#Intiallize grid cells
 grid_cells = [Cell(col, row) for row in range(rows) for col in range(cols)]
+
+#Intiallize stack
 stack = []
 
+
 used_cells = set()
+
+#Intiallize player position at first cell of the maze
 player_position = [0, 0]  
 
-
+#Function that generates the goal at a random position
 def set_goal():
+
+    #Declare global goal position
     global goal_position
+
     while True:
+
+        #Choose random cell as goal position as long as it is not at start of grid
         random_cell = random.choice(grid_cells)
         if random_cell != grid_cells[0]:
             goal_position = (
@@ -182,29 +205,32 @@ def set_goal():
             )
             break
 
-
+#Draw goal 
 def draw_goal():
     if goal_position:
         goal_x, goal_y = goal_position
         icon_rect = goal_icon.get_rect(center=(goal_x, goal_y))
         screen.blit(goal_icon, icon_rect)
 
-
+#Draw player 
 def draw_player():
     player_x = player_position[0] * TILE_SIZE + TILE_SIZE // 2
     player_y = player_position[1] * TILE_SIZE + TILE_SIZE // 2
     player_rect = player_icon.get_rect(center=(player_x, player_y))
     screen.blit(player_icon, player_rect)
 
-
+#Call set goal
 set_goal()
 
-
+#Main function
 def main():
     colors, color = [], 40
     current_cell = grid_cells[0]
     while True:
+        #Build Maze background
         screen.blit(Maze_background, (0, 0))
+
+        #Player movement mechanics 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -220,6 +246,7 @@ def main():
                 elif event.key == pygame.K_RIGHT and not current_cell.walls["right"]:
                     player_position[0] += 1
 
+        
         [cell.draw() for cell in grid_cells]
         current_cell.visited = True
         current_cell.draw_current_cell()
@@ -239,9 +266,13 @@ def main():
         elif stack:
             current_cell = stack.pop()
 
+        #Draw goal icon
         draw_goal()
-        draw_player()
 
+        #Draw player icon
+        draw_player()
+        
+        #Intialize player x and y position
         player_x = player_position[0] * TILE_SIZE + TILE_SIZE // 2
         player_y = player_position[1] * TILE_SIZE + TILE_SIZE // 2
 
@@ -253,7 +284,10 @@ def main():
             pygame.time.delay(2000)
             return
 
+        
         pygame.display.flip()
+
+        #Setting clock to 80 increases maze generation
         clock.tick(80)
 
 
