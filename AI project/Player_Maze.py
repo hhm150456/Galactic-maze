@@ -8,6 +8,8 @@ from random import choice
 #Intialize pygame
 pygame.init()
 
+TILE_SIZE = 40
+
 #Load goal icon
 goal_icon = pygame.image.load("star.png")
 goal_icon = pygame.transform.scale(goal_icon, (TILE_SIZE, TILE_SIZE))
