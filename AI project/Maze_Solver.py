@@ -5,6 +5,13 @@ from queue import PriorityQueue
 
 pygame.init()
 
+#Game caption
+pygame.display.set_caption("Galactic Maze")
+
+#Importing game logo
+logo = pygame.image.load('space.png')
+pygame.display.set_icon(logo)
+
 
 WIDTH, HEIGHT = 1000, 600
 TILE_SIZE = 40
@@ -24,8 +31,7 @@ BLACK = pygame.Color('black')
 
 Mode_buttons = {
     "Easy": pygame.Rect(400, 200, 200, 50),  
-    "Hard": pygame.Rect(400, 270, 200, 50),
-    "Go to Home": pygame.Rect(400, 340, 200, 50),
+    "Hard": pygame.Rect(400, 270, 200, 50)
 }
 
 Button_font = pygame.font.Font('pixeboy-font/Pixeboy-z8XGD.ttf',30)
@@ -61,9 +67,6 @@ def difficulty_menu():
                             return "easy"
                         elif text == "Hard":
                             return "hard"
-                        elif text == "Go to Home":
-                            import Main
-                            Main.main()
         pygame.display.flip()
 
 

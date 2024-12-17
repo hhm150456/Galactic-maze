@@ -31,8 +31,7 @@ clock = pygame.time.Clock()
 #Intiallizing buttons used on mode screen in a dictionary
 Mode_buttons = {
     "Easy": pygame.Rect(400, 200, 200, 50),
-    "Hard": pygame.Rect(400, 270, 200, 50),
-    "Go to Home": pygame.Rect(400, 340, 200, 50),
+    "Hard": pygame.Rect(400, 270, 200, 50)
 }
 
 #Intialize difficulty menu for player mode background
@@ -83,13 +82,16 @@ def difficulty_menu():
                             return "easy"
                         elif text == "Hard":
                             return "hard"
-                        elif text == "Go to Home":
-                            import Main
-                            Main.main()
 
         pygame.display.flip()
 
 
+def delay(level):
+    if level == "easy":
+        return 3
+    elif level == "hard":
+        return 8
+        
 
 #Function that changes tile size and intializes columns and rows after getting difficulty level
 def set_difficulty(level):
@@ -98,6 +100,7 @@ def set_difficulty(level):
         TILE_SIZE = 80
     elif level == "hard":
         TILE_SIZE = 40
+        delay_time = 10
 
     cols, rows = WIDTH // TILE_SIZE, HEIGHT // TILE_SIZE
 
@@ -224,6 +227,10 @@ def draw_player():
 #Call set goal
 set_goal()
 
+delay_time=delay(level)
+
+start_time = pygame.time.get_ticks()  # Record the start time
+
 #Main function
 def main():
     colors, color = [], 40
@@ -231,6 +238,9 @@ def main():
     while True:
         #Build Maze background
         screen.blit(Maze_background, (0, 0))
+
+        elapsed_time = (pygame.time.get_ticks() - start_time) / 1000
+        goal_visible = False
 
         #Player movement mechanics 
         for event in pygame.event.get():
@@ -267,16 +277,27 @@ def main():
             current_cell = next_cell
         elif stack:
             current_cell = stack.pop()
+            
 
-        #Draw goal icon
-        draw_goal()
+        
 
         #Draw player icon
         draw_player()
+
         
+        
+       # Check if 10 seconds have passed to show the goal
+        if not goal_visible and elapsed_time >= delay_time:
+            goal_visible = True  # Make the goal visible
+
+        if goal_visible:
+            draw_goal()
+
         #Intialize player x and y position
         player_x = player_position[0] * TILE_SIZE + TILE_SIZE // 2
         player_y = player_position[1] * TILE_SIZE + TILE_SIZE // 2
+
+        
 
         
 
@@ -287,7 +308,9 @@ def main():
             return
 
         
+        
         pygame.display.flip()
+        
 
         #Setting clock to 80 increases maze generation
         clock.tick(80)

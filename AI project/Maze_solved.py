@@ -6,6 +6,10 @@ pygame.init()
 # setting game screen
 screen = pygame.display.set_mode((1000,600))
 
+#Importing game logo
+logo = pygame.image.load('space.png')
+pygame.display.set_icon(logo)
+
 
 pygame.display.set_caption("Galactic Maze")
 
@@ -18,7 +22,8 @@ End_background = pygame.transform.scale(End_background, (1000, 600))
 Button_font = pygame.font.Font('pixeboy-font/Pixeboy-z8XGD.ttf',30)
 
 End_buttons = {  
-    "Quit": pygame.Rect(400, 390, 200, 50)
+    "Play again": pygame.Rect(400, 350, 200, 50),
+    "Quit": pygame.Rect(400, 470, 200, 50)
 }
 
 def Generate_buttons(buttons, mouse_pos):
@@ -44,7 +49,12 @@ def main():
                     if rect.collidepoint(mouse_pos):
                         if text == "Quit":
                             pygame.quit()
-                            running = False
+                            Playing = False
+                        elif text == "Play again":
+                           import subprocess
+                           subprocess.run(["python", "Maze_Solver.py"])
+                           pygame.APP_TERMINATING()         
+                           Playing = False
     
     
         screen.blit(End_background, (0, 0))
@@ -52,4 +62,4 @@ def main():
         Generate_buttons(End_buttons, mouse_pos)
         pygame.display.flip()
         
-main()    
+main()

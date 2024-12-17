@@ -10,6 +10,11 @@ screen = pygame.display.set_mode((1000,600))
 #Set game caption
 pygame.display.set_caption("Galactic Maze")
 
+#Importing game logo
+logo = pygame.image.load('space.png')
+pygame.display.set_icon(logo)
+
+
 #Intiallizing game font and winnning text and render it
 Game_font = pygame.font.Font("pixeboy-font/Pixeboy-z8XGD.ttf", 100)  
 Maze_win = Game_font.render("You won!", True, (255, 255, 255))  
@@ -24,6 +29,7 @@ Button_font = pygame.font.Font('pixeboy-font/Pixeboy-z8XGD.ttf',30)
 
 #Intiallizing end button used on win screen in a dictionary
 End_buttons = {
+    "Play again": pygame.Rect(400, 250, 200, 50),  
     "Quit": pygame.Rect(400, 390, 200, 50)
 }
 
@@ -51,15 +57,23 @@ def main():
                     if rect.collidepoint(mouse_pos):
                         if text == "Quit":
                             pygame.quit()
-                            running = False
+                            Playing = False
+                        elif text == "Play again":
+                           import subprocess
+                           subprocess.run(["python", "Player_Maze.py"])
+                           pygame.APP_TERMINATING()         
+                           Playing = False
+
+                            
     
         #Build background and text
         screen.blit(win_background, (0, 0))
         screen.blit(Maze_win, Maze_win_rect)
-
         #Call function to generate end button
         Generate_buttons(End_buttons, mouse_pos)
         
         pygame.display.flip()
         
-main()    
+        
+main()
+pygame.display.quit() 
