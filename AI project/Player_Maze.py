@@ -1,41 +1,60 @@
+#import random for
 import random
+#Import pygame for game mechanics
 import pygame
+#Import Choice form random for 
 from random import choice
 
+#Intialize pygame
 pygame.init()
 
-TILE_SIZE = 40
+#Load goal icon
 goal_icon = pygame.image.load("star.png")
 goal_icon = pygame.transform.scale(goal_icon, (TILE_SIZE, TILE_SIZE))
+
+#Load player icon
 player_icon = pygame.image.load("rocket.png")  
 player_icon = pygame.transform.scale(player_icon, (TILE_SIZE , TILE_SIZE ))
 
+#Intiallize maze tile size and screen dimensions 
+TILE_SIZE = 40
 WIDTH, HEIGHT = 1000, 600
+
+#Intialize screen
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
+#Intiallize game clock
 clock = pygame.time.Clock()
 
+#Intiallizing buttons used on mode screen in a dictionary
 Mode_buttons = {
     "Easy": pygame.Rect(400, 200, 200, 50),
     "Hard": pygame.Rect(400, 270, 200, 50),
     "Go to Home": pygame.Rect(400, 340, 200, 50),
 }
 
+#Intialize difficulty menu for player mode background
 Maze_Player_background = pygame.image.load("8-bit-space-console-v0-zjbpg4wmdfvc1.webp")
 Maze_Player_background = pygame.transform.scale(Maze_Player_background, (1000, 600))
-Maze_background = pygame.image.load("pixel-art-night-sky-starry-space-with-shooting-stars-8-bit-pixelated-game-galaxy-seamless-background-vector.jpg")
+
+#Intialize maze background in player mode
+Maze_background = pygame.image.load("ThePinkClouds.jpeg")
 Maze_background = pygame.transform.scale(Maze_background, (1000, 600))
 
+#Intiallizing colors used in maze generation 
 PINK = (255, 192, 203)
 PURPLE = pygame.Color("purple")
 WHITE = pygame.Color("white")
 GREY = pygame.Color("grey")
 BLACK = pygame.Color("black")
 
+#Intiallizing button font
 Button_font = pygame.font.Font("pixeboy-font/Pixeboy-z8XGD.ttf", 30)
 
-
+#Function that opens difficulty menu (Builds background, generates buttons and returns difficulty level)
 def difficulty_menu():
     while True:
+        #Get mouse position
         mouse_pos = pygame.mouse.get_pos()
         screen.blit(Maze_Player_background, (0, 0))
         for text, rect in Mode_buttons.items():
@@ -65,6 +84,8 @@ def difficulty_menu():
         pygame.display.flip()
 
 
+
+
 def set_difficulty(level):
     global TILE_SIZE, cols, rows
     if level == "easy":
@@ -84,7 +105,7 @@ class Cell:
 
     def draw_current_cell(self):
         x, y = self.x * TILE_SIZE, self.y * TILE_SIZE
-        pygame.draw.rect(screen, PINK, (x + 2, y + 2, TILE_SIZE - 2, TILE_SIZE - 2))
+        pygame.draw.rect(screen, BLACK, (x + 2, y + 2, TILE_SIZE - 2, TILE_SIZE - 2))
 
     def draw(self):
         x, y = self.x * TILE_SIZE, self.y * TILE_SIZE
@@ -147,7 +168,7 @@ grid_cells = [Cell(col, row) for row in range(rows) for col in range(cols)]
 stack = []
 
 used_cells = set()
-player_position = [0, 0]  # Start position
+player_position = [0, 0]  
 
 
 def set_goal():
@@ -223,6 +244,9 @@ def main():
 
         player_x = player_position[0] * TILE_SIZE + TILE_SIZE // 2
         player_y = player_position[1] * TILE_SIZE + TILE_SIZE // 2
+
+        
+
         if abs(player_x - goal_position[0]) < TILE_SIZE // 2 and abs(player_y - goal_position[1]) < TILE_SIZE // 2:
             import Player_won
             Player_won.main()
