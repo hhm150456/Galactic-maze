@@ -39,7 +39,7 @@ def Generate_buttons(buttons, mouse_pos):
 
         #Draw button and add border of same color (border is visible when mouse hovers over button)
         pygame.draw.rect(screen, color, rect, border_radius=15)
-        pygame.draw.rect(screen, color, rect, 3, border_radius=15)  
+        pygame.draw.rect(screen, color, rect, 5, border_radius=15)  
 
         #Render text over buttons
         text_surface = Button_font.render(text, True, (0,0,0))
@@ -73,7 +73,7 @@ def main():
                            Maze_Solver.main()
                         elif text == "Quit":
                             pygame.quit()
-                            running = False
+                            Playing = False
     
         #Build home screen and title
         screen.blit(Home_screen_background, (0, 0))

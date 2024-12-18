@@ -60,8 +60,7 @@ def main():
                             Playing = False
                         elif text == "Play again":
                            import subprocess
-                           subprocess.run(["python", "Player_Maze.py"])
-                           pygame.APP_TERMINATING()         
+                           subprocess.run(["python", "Player_Maze.py"])        
                            Playing = False
 
                             

@@ -100,7 +100,6 @@ def set_difficulty(level):
         TILE_SIZE = 80
     elif level == "hard":
         TILE_SIZE = 40
-        delay_time = 10
 
     cols, rows = WIDTH // TILE_SIZE, HEIGHT // TILE_SIZE
 
@@ -229,7 +228,7 @@ set_goal()
 
 delay_time=delay(level)
 
-start_time = pygame.time.get_ticks()  # Record the start time
+start_time = pygame.time.get_ticks() 
 
 #Main function
 def main():
@@ -304,7 +303,7 @@ def main():
         if abs(player_x - goal_position[0]) < TILE_SIZE // 2 and abs(player_y - goal_position[1]) < TILE_SIZE // 2:
             import Player_won
             Player_won.main()
-            pygame.time.delay(2000)
+            pygame.time.delay(1000)
             return
 
         

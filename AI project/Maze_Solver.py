@@ -71,8 +71,6 @@ def difficulty_menu():
 
 
 
-
-
 def set_difficulty(level):
     global TILE_SIZE, cols, rows
     if level == "easy":
